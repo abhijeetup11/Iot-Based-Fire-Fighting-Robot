@@ -1,0 +1,62 @@
+// IoT Based Fire Fighting Robot - Arduino Code
+// Author: Abhijeet Singh
+
+#define FLAME_SENSOR A0
+#define SMOKE_SENSOR A1
+#define PUMP_RELAY 8
+
+#define ENA 5
+#define IN1 6
+#define IN2 7
+
+void setup() {
+  pinMode(FLAME_SENSOR, INPUT);
+  pinMode(SMOKE_SENSOR, INPUT);
+  pinMode(PUMP_RELAY, OUTPUT);
+
+  pinMode(ENA, OUTPUT);
+  pinMode(IN1, OUTPUT);
+  pinMode(IN2, OUTPUT);
+
+  Serial.begin(9600);
+}
+
+void moveForward() {
+  digitalWrite(IN1, HIGH);
+  digitalWrite(IN2, LOW);
+  analogWrite(ENA, 150);
+}
+
+void stopRobot() {
+  digitalWrite(IN1, LOW);
+  digitalWrite(IN2, LOW);
+}
+
+void pumpOn() {
+  digitalWrite(PUMP_RELAY, HIGH);
+}
+
+void pumpOff() {
+  digitalWrite(PUMP_RELAY, LOW);
+}
+
+void loop() {
+  int flameValue = analogRead(FLAME_SENSOR);
+  int smokeValue = analogRead(SMOKE_SENSOR);
+
+  Serial.print("Flame: ");
+  Serial.print(flameValue);
+  Serial.print("  Smoke: ");
+  Serial.println(smokeValue);
+
+  if (flameValue < 400 || smokeValue > 500) {
+    stopRobot();
+    pumpOn();
+    Serial.println("🔥 Fire Detected! Pump ON");
+  } else {
+    pumpOff();
+    moveForward();
+  }
+
+  delay(500);
+}
