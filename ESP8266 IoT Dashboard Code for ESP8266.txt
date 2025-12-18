@@ -1,0 +1,32 @@
+// ESP8266 IoT Dashboard Code
+// Platform: Blynk
+
+#define BLYNK_PRINT Serial
+
+#include <ESP8266WiFi.h>
+#include <BlynkSimpleEsp8266.h>
+
+char auth[] = "YOUR_BLYNK_AUTH_TOKEN";
+char ssid[] = "YOUR_WIFI_NAME";
+char pass[] = "YOUR_WIFI_PASSWORD";
+
+BlynkTimer timer;
+
+void sendData() {
+  int temp = random(30, 60);     // demo values
+  int smoke = random(200, 700);
+
+  Blynk.virtualWrite(V0, temp);
+  Blynk.virtualWrite(V1, smoke);
+}
+
+void setup() {
+  Serial.begin(9600);
+  Blynk.begin(auth, ssid, pass);
+  timer.setInterval(2000L, sendData);
+}
+
+void loop() {
+  Blynk.run();
+  timer.run();
+}
